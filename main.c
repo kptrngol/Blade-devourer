@@ -5,6 +5,7 @@
 
 /*
 - Adding textures of skull and knives
+- Adding dice which determines when there is a second element falling on the screen
 
 */
 
@@ -34,6 +35,7 @@ int main ()
 
     // Textures
 
+    Texture2D background;
     Texture2D skull;
     Texture2D knife;
 
@@ -73,6 +75,7 @@ int main ()
     
     InitAudioDevice();
 
+    background = LoadTexture("./background.png");
     skull = LoadTexture("./skull.png");
     knife = LoadTexture("./knife.png");
 
@@ -97,7 +100,8 @@ int main ()
         BeginDrawing();
 
             ClearBackground(BLACK);
-            DrawTexture(skull,posX,posY,RED);
+            DrawTexture(background,0,0,WHITE);
+            DrawTexture(skull,posX,posY,WHITE);
             DrawTexture(knife,fallX,fallY,GREEN);
             DrawText(TextFormat("Score: %d",score),10,10,10,RED);
             gameover(windowY, fallY, pntIsGameOver,isGameOver, score);
@@ -108,6 +112,7 @@ int main ()
     }
     UnloadSound(sound);
     StopMusicStream(music);
+    UnloadTexture(background);
     UnloadTexture(knife);
     UnloadTexture(skull);
     CloseAudioDevice();
@@ -132,9 +137,10 @@ void move(int * x,int * y)
 }
 void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * fallingY, int isGameOverStatus) 
 {
+
     if (isGameOverStatus == 0) 
     {
-        (*fallingY)+= GetFrameTime() * 485;
+        (*fallingY)+= GetFrameTime() * 500;
     }
     
 }
@@ -164,8 +170,8 @@ void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOv
     if (isGameOverStatus == 1) 
     {
 
-        DrawText(TextFormat("YOU ARE EVEN MORE"),200,240,70,RED);
-        DrawText(TextFormat("DEAD NOW! GAME OVER"),200,340,70,RED);
-        DrawText(TextFormat("Score: %d",score),200,440,70,RED);
+        DrawText(TextFormat("YOU ARE EVEN MORE"),200,240,70,GREEN);
+        DrawText(TextFormat("DEAD NOW! GAME OVER"),200,340,70,GREEN);
+        DrawText(TextFormat("Score: %d",score),200,440,70,WHITE);
     }
 }
