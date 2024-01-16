@@ -1,46 +1,121 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "raylib.h"
 
+
+/*
+- Adding textures of skull and knives
+
+*/
+
+
+// Function declarations
+
 void move(int * x,int * y);
+void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * fallingY,int isGameOverStatus);
+void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound);
+void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score);
 
 int main ()
 {
-    // Position
-    int posX, posY, windowX, windowY;
-    windowX = 1280;
-    windowY = 960;
+    // Variable declarations
+    
+    int isGameOver, posX, posY, windowX, windowY, fallX, fallY, score;
+ 
+    int * pntIsGameOver;
     int * pntX;
     int * pntY;
 
-    // Element initial positons
+    int * pntfX;
+    int * pntfY;
+
+    int * pntScore; 
+
+
+    // Textures
+
+    Texture2D skull;
+    Texture2D knife;
+
+    // Sound
+
+    Sound sound;
+    Music music;
+
+
+    // Variable definitions | initial positions of game elements
+
+    isGameOver = 0;
+    pntIsGameOver = &isGameOver; 
+
+    windowX = 1280;
+    windowY = 960;
+
+    score = 0;
+
     posX = windowX/2;
-    posY = windowY/2+300;
+    posY = windowY/2+150;
+
+    fallX = windowX/2;
+    fallY = 0;
+
     pntX = &posX;
     pntY = &posY;
 
-    // Initialization
-    InitWindow(windowX,windowY,"raylib - basic window");
+    pntfX = &fallX;
+    pntfY = &fallY;
 
+    pntScore = &score;
+
+    // Initialization
+
+    InitWindow(windowX,windowY,"SKULLDEVOUR");
+    
+    InitAudioDevice();
+
+    skull = LoadTexture("./skull.png");
+    knife = LoadTexture("./knife.png");
+
+    music = LoadMusicStream("music.mp3");
+    sound = LoadSound("laugh.ogg");
+    
+    PlayMusicStream(music);
     SetTargetFPS(60);
-    printf("gametemplate");
 
     // Gameloop
+
     while(!WindowShouldClose())
     {
+        // Elements movement and collision logic
+        UpdateMusicStream(music);
+        move(pntX,pntY);
+        fallingObjects(pntX,pntY,pntfX,pntfY, isGameOver);
+        collision(posX,posY,fallX,fallY,pntScore, pntfX, pntfY, sound);
+
+        // Drawing loop
+
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
-            DrawText("Hello Window",(windowX/2-125),(windowY/16+50/2),50,BLACK);
-            DrawRectangle(posX,posY,32,32,GOLD);
-            DrawRectangle(1280/2-125,960/2,250,50,RED);
-            move(pntX,pntY);
-            // collision()
-        
+            ClearBackground(BLACK);
+            DrawTexture(skull,posX,posY,RED);
+            DrawTexture(knife,fallX,fallY,GREEN);
+            DrawText(TextFormat("Score: %d",score),10,10,10,RED);
+            gameover(windowY, fallY, pntIsGameOver,isGameOver, score);
+
         EndDrawing();
+
+        // Adding collision boolean removal
     }
+    UnloadSound(sound);
+    StopMusicStream(music);
+    UnloadTexture(knife);
+    UnloadTexture(skull);
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }
+
+// Function definitions
 
 void move(int * x,int * y) 
 {
@@ -54,13 +129,43 @@ void move(int * x,int * y)
     (*x)-= GetFrameTime() * 1000;
     }
 
-    if (IsKeyDown(KEY_UP))
+}
+void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * fallingY, int isGameOverStatus) 
+{
+    if (isGameOverStatus == 0) 
     {
-    (*y)-= GetFrameTime() * 1000;
+        (*fallingY)+= GetFrameTime() * 485;
+    }
+    
+}
+void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound)
+{
+    int random = 0+ rand() / (RAND_MAX / (1280 +1) +1);
+
+    if (((knifeX <= skullX+200)&&(knifeX >= skullX)) && ((knifeY >= skullY-50)&&(knifeY <= skullY+10)))
+    {
+        (*pntScore)++;
+        *pntKnifeX = random;
+        printf("%d",random);
+        *pntKnifeY = 0;
+    }
+        if (((knifeX <= skullX+20)&&(knifeX >= skullX)) && ((knifeY >= skullY-50)&&(knifeY <= skullY+10)))
+    {
+        PlaySound(sound);
     }
 
-    if (IsKeyDown(KEY_DOWN))
+}
+void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score) 
+{
+    if (fallingY >= 960)
     {
-    (*y)+= GetFrameTime() * 1000;
+        *GameOverStatus = 1;
+    }
+    if (isGameOverStatus == 1) 
+    {
+
+        DrawText(TextFormat("YOU ARE EVEN MORE"),200,240,70,RED);
+        DrawText(TextFormat("DEAD NOW! GAME OVER"),200,340,70,RED);
+        DrawText(TextFormat("Score: %d",score),200,440,70,RED);
     }
 }
