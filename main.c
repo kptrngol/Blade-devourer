@@ -4,8 +4,8 @@
 
 
 /*
-- Issues:
-Second object rendering
+#Issues:
+-green sword stop rendering after loosing one
 */
 
 
@@ -14,15 +14,15 @@ Second object rendering
 void move(int * x,int * y);
 void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * fallingY,int isGameOverStatus);
 void fallingObjects2(int * fallingY, int isGameOverStatus, int activation);
-void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound, int knifeX2, int knifeY2, int * pntKnifeX2,int * pntKnifeY2, int activation);
-void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score);
+void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound, int knifeX2, int knifeY2, int * pntKnifeX2,int * pntKnifeY2, int activation, int * php);
+void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score, int hp, int * php);
 void eventsRandomiser(int counterValue, int * counter, int * r, const double max);
 
 int main ()
 {
     // Variable declarations
     
-    int activation, counter, randomValue, isGameOver, posX, posY, windowX, windowY, fallX, fallY, fallX2, fallY2, score;
+    int activation, counter, randomValue, isGameOver, posX, posY, windowX, windowY, fallX, fallY, fallX2, fallY2, score, hp;
 
     int * pntIsGameOver;
     int * pntX;
@@ -34,6 +34,7 @@ int main ()
     int * pntScore; 
     int * pntRandomValue;
     int * pntCounter;
+    int * pntHP;
 
     // Textures
 
@@ -51,6 +52,7 @@ int main ()
     // Variable definitions | initial positions of game elements
 
     isGameOver = 0;
+    hp = 1;
     pntIsGameOver = &isGameOver; 
     windowX = 1280;
     windowY = 960;
@@ -63,8 +65,9 @@ int main ()
     fallY2 = -300;
     counter = 0;
     randomValue = 0;
-    activation = 0;
+    activation = 1;
 
+    pntHP = &hp;
     pntX = &posX;
     pntY = &posY;
     pntfX = &fallX;
@@ -105,9 +108,12 @@ int main ()
 
         fallingObjects(pntX,pntY,pntfX,pntfY, isGameOver);
 
-        fallingObjects2(pntfY2, isGameOver, activation);
+        if(activation == 1)
+        {
+            fallingObjects2(pntfY2, isGameOver, activation);
+        }    
 
-        collision(posX,posY,fallX,fallY,pntScore, pntfX, pntfY, sound, fallX2, fallY2, pntfX2, pntfY2, activation);
+        collision(posX,posY,fallX,fallY,pntScore, pntfX, pntfY, sound, fallX2, fallY2, pntfX2, pntfY2, activation, pntHP);
 
         // Drawing loop
 
@@ -116,18 +122,28 @@ int main ()
             ClearBackground(BLACK);
             DrawTexture(background,0,0,WHITE);
             DrawTexture(skull,posX,posY,WHITE);
-            if ((counter == randomValue) && ( fallY2 <= 0)) 
+            if ((counter == randomValue) && (fallY2 >= 0)) 
             {
                 fallX2 = GetRandomValue(20,1260);
+                fallY2 = 0;
                 activation = 1;
             }
-            DrawTexture(knifeEx,fallX2,fallY2,RED);
             DrawTexture(knife,fallX,fallY,GREEN);
-            DrawText(TextFormat("Score: %d",score),10,10,20,GREEN);
-            DrawText(TextFormat("Random: %d",randomValue),10,45,20,WHITE);
-            DrawText(TextFormat("Counter: %d", counter),10,65,20,WHITE);
-            DrawText(TextFormat("Activation: %d", activation),10,85,20,WHITE);
-            gameover(windowY, fallY, pntIsGameOver,isGameOver, score);
+            if ((activation == 1)) {
+                DrawTexture(knifeEx,fallX2,fallY2,RED);
+            }
+            DrawText(TextFormat("DeathPoits (Score): %d", score),10,10,15,GREEN);
+            DrawText(TextFormat("DeathEssence (HP): %d", hp),10,30,15,PURPLE);
+
+            // Dev info 
+
+            // DrawText(TextFormat("Random: %d",randomValue),10,45,20,WHITE);
+            // DrawText(TextFormat("Counter: %d", counter),10,65,20,WHITE);
+            // DrawText(TextFormat("Activation: %d", activation),10,85,20,WHITE);
+            // DrawText(TextFormat("x: %d", fallX2),10,105,20,WHITE);
+            // DrawText(TextFormat("y: %d", fallY2),10,125,20,WHITE);
+
+            gameover(windowY, fallY, pntIsGameOver,isGameOver, score, hp, pntHP);
 
         EndDrawing();
 
@@ -177,42 +193,45 @@ void fallingObjects2(int * fallingY, int isGameOverStatus, int activation)
     }
     
 }
-void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound, int knifeX2, int knifeY2, int * pntKnifeX2,int * pntKnifeY2, int activation)
+void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, int * pntKnifeX,int * pntKnifeY, struct Sound sound, int knifeX2, int knifeY2, int * pntKnifeX2,int * pntKnifeY2, int activation, int * php)
 {
-    int random = 0+ rand() / (RAND_MAX / (1280 +1) +1);
 
-    if (((knifeX <= skullX+200)&&(knifeX >= skullX)) && ((knifeY >= skullY-50)&&(knifeY <= skullY+10)))
+    if (((knifeX+45 <= skullX+155)&&(knifeX+45 >= skullX+35)) && ((knifeY+200 >= skullY+140)&&(knifeY+200 <= skullY+190)))
     {
         (*pntScore)++;
-        *pntKnifeX = random;
+        *pntKnifeX = GetRandomValue(20,1240);
         *pntKnifeY = 0;
     }
-        if (((knifeX <= skullX+20)&&(knifeX >= skullX)) && ((knifeY >= skullY-50)&&(knifeY <= skullY+10)))
-    {
-        PlaySound(sound);
-    }
+
 
     // Second knife collision logic
 
-        if (((knifeX2 <= skullX+200)&&(knifeX2 >= skullX)) && ((knifeY2 >= skullY-50)&&(knifeY2 <= skullY+10)))
-    {
-        (*pntScore)+=10;
-        // *pntknifeX2 = random;
-        *pntKnifeY2 = -300;
-        activation = 0;
-    }
-        if (((knifeX2 <= skullX+20)&&(knifeX2 >= skullX)) && ((knifeY2 >= skullY-50)&&(knifeY2 <= skullY+10)))
+        if (((knifeX2+45 <= skullX+165)&&(knifeX2+45 >= skullX+25)) && ((knifeY2+200 >= skullY+130)&&(knifeY2+200 <= skullY+200)))
     {
         PlaySound(sound);
+        (*pntScore)+=10;
+        (*php)++;
+        activation = 0;
+        (*pntKnifeX2) = GetRandomValue(20,1240);
+        (*pntKnifeY2) = 0;
+    } else if((knifeY2 >= skullY))
+    {
+        activation = 0;
     }
 
 }
-void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score) 
+void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score, int hp, int * php) 
 {
-    if (fallingY >= 960)
+    if ((fallingY = 960) && !(hp >= 0))
+    {
+        *GameOverStatus = 0;
+        (*php)--;
+    } else if ((fallingY = 960) && (hp == 0))
     {
         *GameOverStatus = 1;
     }
+
+
     if (isGameOverStatus == 1) 
     {
 
