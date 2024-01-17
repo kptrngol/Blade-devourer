@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include "raylib.h"
 
-
-/*
-#Issues:
--green sword stop rendering after loosing one
-*/
-
-
 // Function declarations
 
 void move(int * x,int * y);
@@ -139,8 +132,6 @@ int main ()
             DrawText(TextFormat("DEATH FLEX POINTS: %d", score),10,10,15,PURPLE);
             DrawText(TextFormat("DEATH ESSENCE: %d", hp),10,30,15,GOLD);
 
-
-
             // Gameover logic
 
             if ((fallY >= 960) && (hp >= 1))
@@ -163,8 +154,6 @@ int main ()
                     flag = 0;
                 }
             }
-
-
 
             gameover(windowY, fallY, pntIsGameOver,isGameOver, score, hp, pntHP);
 
@@ -225,8 +214,7 @@ void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, i
         *pntKnifeY = 0;
     }
 
-
-    // Second knife collision logic
+    // Second sword collision logic
 
         if (((knifeX2+45 <= skullX+165)&&(knifeX2+45 >= skullX+25)) && ((knifeY2+200 >= skullY+130)&&(knifeY2+200 <= skullY+200)))
     {
