@@ -81,7 +81,7 @@ int main ()
 
     // Initialization
 
-    InitWindow(windowX,windowY,"BLADEDEVOUR");
+    InitWindow(windowX,windowY,"BLADE DEVOURER");
     
     InitAudioDevice();
 

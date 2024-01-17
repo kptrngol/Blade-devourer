@@ -1,0 +1,2 @@
+Blade Devourer is a simple Raylib based game created in the first interaction with the library. 
+The project was started with an aim to learn the basics of the Raylib library before more complex projects in the future.
