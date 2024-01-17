@@ -52,7 +52,7 @@ int main ()
     // Variable definitions | initial positions of game elements
 
     isGameOver = 0;
-    hp = 1;
+    hp = 2;
     pntIsGameOver = &isGameOver; 
     windowX = 1280;
     windowY = 960;
@@ -133,7 +133,8 @@ int main ()
                 DrawTexture(knifeEx,fallX2,fallY2,RED);
             }
             DrawText(TextFormat("DeathPoits (Score): %d", score),10,10,15,GREEN);
-            DrawText(TextFormat("DeathEssence (HP): %d", hp),10,30,15,PURPLE);
+            // DrawText(TextFormat("DeathEssence (HP): %d", hp),10,30,15,PURPLE);
+            // DrawText(TextFormat("IsGameOver?: %d", isGameOver),10,50,15,PURPLE);
 
             // Dev info 
 
@@ -222,15 +223,15 @@ void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, i
 }
 void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score, int hp, int * php) 
 {
-    if ((fallingY = 960) && !(hp >= 0))
+    if ((fallingY >= 960) && (hp >= 1))
     {
-        *GameOverStatus = 0;
         (*php)--;
-    } else if ((fallingY = 960) && (hp == 0))
-    {
-        *GameOverStatus = 1;
     }
 
+    if (hp == 0)
+    {
+        (*GameOverStatus) = 1;    
+    }
 
     if (isGameOverStatus == 1) 
     {
