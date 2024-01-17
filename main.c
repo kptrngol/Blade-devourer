@@ -22,7 +22,7 @@ int main ()
 {
     // Variable declarations
     
-    int activation, counter, randomValue, isGameOver, posX, posY, windowX, windowY, fallX, fallY, fallX2, fallY2, score, hp;
+    int activation, counter, randomValue, isGameOver, posX, posY, windowX, windowY, fallX, fallY, fallX2, fallY2, score, hp, flag;
 
     int * pntIsGameOver;
     int * pntX;
@@ -51,8 +51,9 @@ int main ()
 
     // Variable definitions | initial positions of game elements
 
+    flag = 0;
     isGameOver = 0;
-    hp = 2;
+    hp = 1;
     pntIsGameOver = &isGameOver; 
     windowX = 1280;
     windowY = 960;
@@ -87,7 +88,7 @@ int main ()
     background = LoadTexture("./background.png");
     skull = LoadTexture("./skull.png");
     knife = LoadTexture("./knife.png");
-    knifeEx = LoadTexture("./knife.png");
+    knifeEx = LoadTexture("./redsword.png");
     music = LoadMusicStream("music.mp3");
     sound = LoadSound("laugh.ogg");
     
@@ -122,33 +123,53 @@ int main ()
             ClearBackground(BLACK);
             DrawTexture(background,0,0,WHITE);
             DrawTexture(skull,posX,posY,WHITE);
+
             if ((counter == randomValue) && (fallY2 >= 0)) 
             {
                 fallX2 = GetRandomValue(20,1260);
                 fallY2 = 0;
                 activation = 1;
             }
+            
             DrawTexture(knife,fallX,fallY,GREEN);
             if ((activation == 1)) {
                 DrawTexture(knifeEx,fallX2,fallY2,RED);
             }
-            DrawText(TextFormat("DeathPoits (Score): %d", score),10,10,15,GREEN);
-            // DrawText(TextFormat("DeathEssence (HP): %d", hp),10,30,15,PURPLE);
-            // DrawText(TextFormat("IsGameOver?: %d", isGameOver),10,50,15,PURPLE);
+            
+            DrawText(TextFormat("DEATH FLEX POINTS: %d", score),10,10,15,PURPLE);
+            DrawText(TextFormat("DEATH ESSENCE: %d", hp),10,30,15,GOLD);
 
-            // Dev info 
 
-            // DrawText(TextFormat("Random: %d",randomValue),10,45,20,WHITE);
-            // DrawText(TextFormat("Counter: %d", counter),10,65,20,WHITE);
-            // DrawText(TextFormat("Activation: %d", activation),10,85,20,WHITE);
-            // DrawText(TextFormat("x: %d", fallX2),10,105,20,WHITE);
-            // DrawText(TextFormat("y: %d", fallY2),10,125,20,WHITE);
+
+            // Gameover logic
+
+            if ((fallY >= 960) && (hp >= 1))
+            {
+                if (flag == 0)
+                {
+
+                    (*pntHP)--;
+                    flag = 1;
+                }
+
+                if (hp == 0)
+                {
+                    (*pntIsGameOver) = 1;  
+                } else 
+                {
+
+                    fallX = GetRandomValue(20,1240);
+                    fallY = 0;
+                    flag = 0;
+                }
+            }
+
+
 
             gameover(windowY, fallY, pntIsGameOver,isGameOver, score, hp, pntHP);
 
         EndDrawing();
 
-        // Adding collision boolean removal
     }
     UnloadSound(sound);
     StopMusicStream(music);
@@ -181,7 +202,7 @@ void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * falling
 
     if (isGameOverStatus == 0) 
     {
-        (*fallingY)+= GetFrameTime() * 500;
+        (*fallingY)+= GetFrameTime() * 650;
     }
     
 }
@@ -190,7 +211,7 @@ void fallingObjects2(int * fallingY, int isGameOverStatus, int activation)
 
     if ((isGameOverStatus == 0) && (activation == 1))  
     {
-        (*fallingY)+= GetFrameTime() * 600;
+        (*fallingY)+= GetFrameTime() * 450;
     }
     
 }
@@ -223,22 +244,20 @@ void collision(int skullX ,int skullY, int knifeX, int knifeY, int * pntScore, i
 }
 void gameover(int windowBottom, int fallingY, int * GameOverStatus, int isGameOverStatus, int score, int hp, int * php) 
 {
-    if ((fallingY >= 960) && (hp >= 1))
-    {
-        (*php)--;
-    }
-
-    if (hp == 0)
-    {
-        (*GameOverStatus) = 1;    
-    }
 
     if (isGameOverStatus == 1) 
     {
 
-        DrawText(TextFormat("YOU ARE EVEN MORE"),200,240,70,GREEN);
-        DrawText(TextFormat("DEAD NOW! GAME OVER"),200,340,70,GREEN);
-        DrawText(TextFormat("Score: %d",score),200,440,70,WHITE);
+        DrawText(TextFormat("YOU'RE DEAD AND YOU ALWAYS WILL BE"),10,100,30,WHITE);
+        DrawText(TextFormat("STILL, YOU CAN BE DEAD BUT"),10,150,30,WHITE);
+        DrawText(TextFormat("FLEXIN WITH STYLE, RIGHT?"),10,200,30,WHITE);
+        DrawText(TextFormat("GATHER DEATH FLEX PNTS"),10,250,30,WHITE);
+        DrawText(TextFormat("BY DEVOURING SWORDS !"),10,300,30,WHITE);
+        DrawText(TextFormat("RED SWORDS WILL KEEP"),10,350,30,WHITE);
+        DrawText(TextFormat("YOU GOING LONGER"),10,400,30,WHITE);
+        DrawText(TextFormat("DEATH FLEX:"),10,450,30,PURPLE);
+        DrawText(TextFormat("%d",score),10,500,30,PURPLE);
+
     }
 }
 void eventsRandomiser(int counterValue, int * counter, int * r, const double max)
