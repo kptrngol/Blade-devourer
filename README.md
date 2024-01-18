@@ -6,6 +6,11 @@ Game screen:
 
 Credits:
 
+Dependencies:
+https://github.com/raysan5/raylib
+More info:
+https://www.raylib.com/
+
 Textures:
 https://perchance.org/ai-pixel-art-generator
 Sound:
