@@ -139,11 +139,11 @@ int main ()
                 if (flag == 0)
                 {
 
-                    (*pntHP)--;
+                    (*pntHP)-=2;
                     flag = 1;
                 }
 
-                if (hp == 0)
+                if (hp <= 0)
                 {
                     (*pntIsGameOver) = 1;  
                 } else 
