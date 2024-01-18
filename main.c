@@ -191,7 +191,7 @@ void fallingObjects(int * paletteX,int * paletteY, int * fallingX, int * falling
 
     if (isGameOverStatus == 0) 
     {
-        (*fallingY)+= GetFrameTime() * 650;
+        (*fallingY)+= GetFrameTime() * (550 + GetRandomValue(0,60));
     }
     
 }
