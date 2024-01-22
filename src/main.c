@@ -78,12 +78,12 @@ int main ()
     
     InitAudioDevice();
 
-    background = LoadTexture("./background.png");
-    skull = LoadTexture("./skull.png");
-    knife = LoadTexture("./knife.png");
-    knifeEx = LoadTexture("./redsword.png");
-    music = LoadMusicStream("music.mp3");
-    sound = LoadSound("laugh.ogg");
+    background = LoadTexture("./assets/background.png");
+    skull = LoadTexture("./assets/skull.png");
+    knife = LoadTexture("./assets/knife.png");
+    knifeEx = LoadTexture("./assets/redsword.png");
+    music = LoadMusicStream("./assets/music.mp3");
+    sound = LoadSound("./assets/laugh.ogg");
     
     PlayMusicStream(music);
     SetTargetFPS(60);
